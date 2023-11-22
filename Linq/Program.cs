@@ -12,7 +12,8 @@ namespace Linq
             };
 
             var result = list.Select(l => l * l)
-                .Where(l => l % 2 == 0);
+                .Where(l => l % 3 == 0)
+                .ToList();
 
             foreach (var item in result)
             {
@@ -21,8 +22,26 @@ namespace Linq
 
             Console.WriteLine("");
             
-            Console.WriteLine(result.Any(i => i > 50));
-            Console.WriteLine(result.Contains(4));
+            int sum = list.Select(l => l * l)
+                .Where(l => l % 3 == 0)
+                .Sum();
+            
+            int count = list.Select(l => l * l)
+                .Where(l => l % 3 == 0)
+                .Count();
+            
+            bool any = list.Select(l => l * l)
+                .Where(l => l % 3 == 0)
+                .Any(i => i > 50);
+            
+            var contains = list.Select(l => l * l)
+                .Where(l => l % 3 == 0)
+                .Contains(4);
+            
+            Console.WriteLine(any);
+            Console.WriteLine(contains);
+            Console.WriteLine(count);
+            Console.WriteLine(sum);
         }
     }
 }

@@ -1,64 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Linq.Iterators;
 
 namespace Linq
 {
     public static class MyLinq
     {
-        public static IEnumerable<TResult> Select<TSource, TResult>(
+        public static IEnumerator<TResult> Select<TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TResult> selector)
         {
-            if (source == null || selector == null)
+            var iterator = new SelectIterator<TSource, TResult>(source, selector);
+            while (iterator.MoveNext())
             {
-                return null;
+                yield return iterator.Current;
             }
-            
-            List<TResult> result = new List<TResult>();
-
-            foreach (var item in source)
-            {
-                result.Add(selector.Invoke(item));
-            }
-
-            return result;
         }
 
-        public static IEnumerable<TSource> Where<TSource>(
-            this IEnumerable<TSource> source,
+        public static IEnumerator<TSource> Where<TSource>(
+            this IEnumerator<TSource> source,
             Predicate<TSource> predicate)
         {
-            if (source == null || predicate == null)
+            var iterator = new WhereIterator<TSource>(source, predicate);
+            while (iterator.MoveNext())
             {
-                return null;
+                yield return iterator.Current;
             }
-
-            List<TSource> result = new List<TSource>();
-
-            foreach (var item in source)
-            {
-                if (predicate.Invoke(item))
-                {
-                    result.Add(item);
-                }
-            }
-            
-            result.Sum()
-
-            return result;
         }
 
-        public static bool Any<TSource>(this IEnumerable<TSource> source, Predicate<TSource> predicate)
+        public static bool Any<TSource>(this IEnumerator<TSource> source, Predicate<TSource> predicate)
         {
             if (source == null || predicate == null)
             {
                 return false;
             }
 
-            foreach (var item in source)
+            while (source.MoveNext())
             {
-                if (predicate(item))
+                if (source.Current != null && predicate(source.Current))
                 {
                     return true;
                 }
@@ -67,29 +46,67 @@ namespace Linq
             return false;
         }
 
-        public static bool Contains<TSource>(this IEnumerable<TSource> source, TSource item)
+        public static bool Contains<TSource>(this IEnumerator<TSource> source, TSource item)
         {
             if (source == null || item == null)
             {
                 return false;
             }
 
-            foreach (var sourceItem in source)
+            while (source.MoveNext())
             {
-                if (sourceItem.GetHashCode().Equals(item.GetHashCode()))
+                if (source.Current != null && source.Current.Equals(item))
                 {
                     return true;
                 }
             }
-
+            
+            source.Dispose();
             return false;
         }
         
-        
-
-        public static List<T> ToList<T>(this IEnumerable<T> source)
+        public static List<T> ToList<T>(this IEnumerator<T> source)
         {
-            return new List<T>(source);
+            var result = new List<T>();
+            while (source.MoveNext())
+            {
+                result.Add(source.Current);
+            }
+            source.Dispose();
+            return result;
+        }
+
+        public static int Count<T>(this IEnumerator<T> source)
+        {
+            int count = 0;
+            while (source.MoveNext())
+            {
+                count++;
+            }
+            source.Dispose();
+            return count;
+        }
+        
+        public static int Sum(this IEnumerator<int> source)
+        {
+            int sum = 0;
+            while (source.MoveNext())
+            {
+                sum += source.Current;
+            }
+            source.Dispose();
+            return sum;
+        }
+        
+        public static float Sum(this IEnumerator<float> source)
+        {
+            float sum = 0;
+            while (source.MoveNext())
+            {
+                sum += source.Current;
+            }
+            source.Dispose();
+            return sum;
         }
     }
 }
