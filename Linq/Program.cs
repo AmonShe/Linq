@@ -8,7 +8,7 @@ namespace Linq
         {
             var list = new[]
             {
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                10, 9, 8, 7, 6, 5, 4, 3, 2, 1
             };
 
             var result = list.Select(l => l * l)
@@ -42,6 +42,16 @@ namespace Linq
             Console.WriteLine(contains);
             Console.WriteLine(count);
             Console.WriteLine(sum);
+            
+            Console.WriteLine("");
+
+            foreach (var item in list.OrderBy((item1, item2) =>
+            {
+                return item2 - item1;
+            }))
+            {
+                Console.Write($"{item} ");
+            }
         }
     }
 }

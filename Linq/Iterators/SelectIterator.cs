@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Linq.Iterators
 {
-    public class SelectIterator<TSource, TResult>: IEnumerator<TResult>
+    public class SelectIterator<TSource, TResult>: IEnumerator<TResult>, IEnumerable<TResult>
     {
         private Func<TSource, TResult> m_Selector;
         private IEnumerator<TSource> m_Enumerator;
@@ -47,6 +47,16 @@ namespace Linq.Iterators
             m_Selector = null;
             m_Enumerator = null;
             m_AlreadyDisposed = true;
+        }
+
+        public IEnumerator<TResult> GetEnumerator()
+        {
+            return this;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
