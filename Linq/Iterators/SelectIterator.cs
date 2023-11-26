@@ -12,6 +12,11 @@ namespace Linq.Iterators
 
         public SelectIterator(IEnumerable<TSource> source, Func<TSource, TResult> selector)
         {
+            if (selector == null || source == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             m_Selector = selector;
             m_Enumerator = source.GetEnumerator();
         }

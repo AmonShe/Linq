@@ -10,6 +10,11 @@ namespace Linq
             this IEnumerable<TSource> source,
             Func<TSource, TResult> selector)
         {
+            if (selector == null || source == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             var iterator = new SelectIterator<TSource, TResult>(source, selector);
             while (iterator.MoveNext())
             {
@@ -21,6 +26,11 @@ namespace Linq
             this IEnumerable<TSource> source,
             Predicate<TSource> predicate)
         {
+            if (predicate == null || source == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             var iterator = new WhereIterator<TSource>(source, predicate);
             while (iterator.MoveNext())
             {
@@ -66,6 +76,11 @@ namespace Linq
         
         public static List<T> ToList<T>(this IEnumerable<T> source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             var result = new List<T>();
             foreach (var item in source)
             {
@@ -76,6 +91,11 @@ namespace Linq
 
         public static int Count<T>(this IEnumerable<T> source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             int count = 0;
             foreach (var item in source)
             {
@@ -86,6 +106,11 @@ namespace Linq
         
         public static int Sum(this IEnumerable<int> source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             int sum = 0;
             foreach (var item in source)
             {
@@ -96,6 +121,11 @@ namespace Linq
         
         public static float Sum(this IEnumerable<float> source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             float sum = 0;
             foreach (var item in source)
             {
@@ -108,36 +138,17 @@ namespace Linq
         {
             if (source == null || compare == null)
             {
-                return null;
+                throw new ArgumentNullException();
             }
-
-            return Sort(source, compare);
-        }
-
-        private static IEnumerable<T> Sort<T>(IEnumerable<T> source, Func<T,T, int> compare)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            T buff;
-            var list = source.ToList();
             
-            for (var i = 1; i < list.Count; i++)
-            {
-                for (var j = 0; j < list.Count - i; j++)
-                {
-                    if (compare(list[j], list[j + 1]) < 0)
-                    {
-                        buff = list[j];
-                        list[j] = list[j + 1];
-                        list[j + 1] = buff;
-                    }
-                }
-            }
+            var iterator = new OrderByIterator<T>(source, compare);
 
-            return list;
+            while (iterator.MoveNext())
+            {
+                yield return iterator.Current;
+            }
+            
+            iterator.Dispose();
         }
     }
 }

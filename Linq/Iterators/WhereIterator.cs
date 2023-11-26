@@ -12,6 +12,11 @@ namespace Linq.Iterators
 
         public WhereIterator(IEnumerable<TSource> source, Predicate<TSource> predicate)
         {
+            if (source == null || predicate == null)
+            {
+                throw new ArgumentNullException();
+            }
+            
             m_Enumerator = source.GetEnumerator();
             m_Predicate = predicate;
         }
