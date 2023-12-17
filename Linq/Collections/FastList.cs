@@ -155,7 +155,6 @@ namespace Collections
                 
                 var items = new T[m_Capacity];
                 int newSize = m_Size + array.Length;
-                int rightFreeItems = m_Capacity / 2 - newSize / 2;
                 int leftFreeItems = m_Capacity / 2 - (newSize - newSize / 2);
 
                 Array.Copy(m_Items,
@@ -173,7 +172,7 @@ namespace Collections
                 Array.Copy(m_Items,
                     m_LeftFreeItems + arrayIndex,
                     items,
-                    leftFreeItems + array.Length + arrayIndex,
+                    leftFreeItems + array.Length + arrayIndex - 1,
                     m_Size - arrayIndex);
                 
                 m_Items = items;
@@ -289,7 +288,7 @@ namespace Collections
                 m_LeftFreeItems + index + 1,
                 m_Items,
                 m_LeftFreeItems + index,
-                m_Size - index);
+                m_Size - index - 1);
             m_Size--;
             m_Version++;
         }
@@ -305,17 +304,13 @@ namespace Collections
 
         public void Sort(Func<T,T, int> compare)
         {
-            T buff;
-            
             for (var i = 1; i < m_Size; i++)
             {
                 for (var j = 0; j < m_Size - i; j++)
                 {
-                    if (compare(this[j], this[j + 1]) < 0)
+                    if (compare(this[j], this[j + 1]) > 0)
                     {
-                        buff = this[j];
-                        this[j] = this[j + 1];
-                        this[j + 1] = buff;
+                        (this[j], this[j + 1]) = (this[j + 1], this[j]);
                     }
                 }
             }

@@ -9,33 +9,38 @@ namespace Linq
         public static void Main(string[] args)
         {
             FastList<int> fastlist = new FastList<int>() { 1, 2, 3, 4, 5, 6 };
-                        List<int> list = new List<int>() { 1, 2, 3, 4, 5, 6 };
-                        
-                        fastlist.Add(7);
-                        fastlist.Insert(0, 0);
-                        fastlist.Insert(3, -1);
-                        fastlist.Insert(3, -2);
-                        fastlist.Insert(3, -3);
-                        fastlist.Insert(3, -4);
-                        
-                        list.Add(7);
-                        list.Insert(0, 0);
-                        list.Insert(3, -1);
-                        list.Insert(3, -2);
-                        list.Insert(3, -3);
-                        list.Insert(3, -4);
+            List<int> list = new List<int>() { 1, 2, 3, 4, 5, 6 };
             
-                        foreach (var i in fastlist)
-                        {
-                            Console.Write(i + " ");
-                        }
-                        Console.WriteLine();
+            fastlist.Add(7);
+            fastlist.Insert(0, 0);
+            fastlist.Insert(0, 0);
+            fastlist.Add(7);
+            fastlist.Insert(0, 0);
+            fastlist.Add(7);
+            
+            list.Add(7);
+            list.Insert(0, 0);
+            list.Insert(0, 0);
+            list.Add(7);
+            list.Insert(0, 0);
+            list.Add(7);
+
+            fastlist.Remove(7);
+            list.Remove(7);
+            
+            foreach (var i in fastlist)
+            {
+                Console.Write(i + " ");
+            }
+            Console.WriteLine();
+            
+            foreach (var i in list)
+            {
+                Console.Write(i + " ");
+            }
+            Console.WriteLine();
                         
-                        foreach (var i in list)
-                        {
-                            Console.Write(i + " ");
-                        }
-                        Console.WriteLine();
+                        
 
             //Output: 9 10 11 12
 
