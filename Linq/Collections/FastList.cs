@@ -10,8 +10,10 @@ namespace Collections
         private int m_Size;
         private int m_Capacity;
         private int m_LeftFreeItems;
-        private int m_RightFreeItems;
+        
         private int m_Version;
+
+        private int RightFreeItems => m_Capacity - m_Size - m_LeftFreeItems;
 
         public int Count => m_Size;
         public int Capacity => m_Capacity;
@@ -50,24 +52,23 @@ namespace Collections
                     m_Items = new T[m_Capacity];
                 }
 
-                m_RightFreeItems = m_Capacity / 2;
-                m_LeftFreeItems = m_RightFreeItems - 1;
+                m_LeftFreeItems = RightFreeItems - 1;
                 m_Items[m_LeftFreeItems] = item;
                 m_Size = 1;
                 m_Version++;
                 return;
             }
             
-            if (m_RightFreeItems <= 0)
+            if (RightFreeItems <= 0)
             {
                 IncreaseArray();
+                m_Size++;
                 m_Items[m_LeftFreeItems + m_Size - 1] = item;
             }
             else
             {
                 m_Items[m_LeftFreeItems + m_Size] = item;
                 m_Size++;
-                m_RightFreeItems--;
             }
 
             m_Version++;
@@ -76,19 +77,16 @@ namespace Collections
         private void IncreaseArray()
         {
             m_Capacity *= 2;
-            m_Size++;
             var items = new T[m_Capacity];
-            int rightFreeItems = m_Capacity / 2 - m_Size / 2;
             int leftFreeItems = m_Capacity / 2 - (m_Size - m_Size / 2);
 
             Array.ConstrainedCopy(m_Items,
                 m_LeftFreeItems,
                 items,
                 leftFreeItems,
-                m_Size - 1);
+                m_Size);
             m_Items = items;
             m_LeftFreeItems = leftFreeItems;
-            m_RightFreeItems = rightFreeItems;
         }
 
         public void Clear()
@@ -131,7 +129,7 @@ namespace Collections
                 return;
             }
 
-            if (m_RightFreeItems >= array.Length)
+            if (RightFreeItems >= array.Length)
             {
                 Array.Copy(m_Items, 
                     m_LeftFreeItems + arrayIndex, 
@@ -144,7 +142,6 @@ namespace Collections
                     m_LeftFreeItems + arrayIndex,
                     array.Length);
 
-                m_RightFreeItems -= array.Length;
                 m_Size += array.Length;
                 m_Version++;
             }
@@ -181,7 +178,6 @@ namespace Collections
                 
                 m_Items = items;
                 m_LeftFreeItems = leftFreeItems;
-                m_RightFreeItems = rightFreeItems;
                 m_Size = newSize;
                 m_Version++;
             }
@@ -245,28 +241,28 @@ namespace Collections
 
         private void InsertInCenter(int index, T item)
         {
-            if (m_RightFreeItems > 0)
+            if (RightFreeItems > 0)
             {
                 Array.Copy(m_Items, 
-                    index, 
+                    index + m_LeftFreeItems, 
                     m_Items, 
-                    index + 1, 
+                    index + 1 + m_LeftFreeItems, 
                     m_Size - index);
                 
-                m_Items[index] = item;
-                m_RightFreeItems--;
+                this[index] = item;
                 m_Size++;
             }
             else
             {
                 IncreaseArray();
                 Array.Copy(m_Items, 
-                    index, 
+                    index + m_LeftFreeItems, 
                     m_Items, 
-                    index + 1, 
-                    m_Size - index - 1);
+                    index + 1 + m_LeftFreeItems, 
+                    m_Size - index);
                 
-                m_Items[index] = item;
+                this[index] = item;
+                m_Size++;
             }
         }
 
@@ -279,6 +275,7 @@ namespace Collections
             
             m_Items[m_LeftFreeItems - 1] = item;
             m_LeftFreeItems--;
+            m_Size++;
         }
 
         public void RemoveAt(int index)
@@ -294,7 +291,6 @@ namespace Collections
                 m_LeftFreeItems + index,
                 m_Size - index);
             m_Size--;
-            m_RightFreeItems++;
             m_Version++;
         }
 
@@ -304,7 +300,6 @@ namespace Collections
             m_Capacity = 0;
             m_Size = 0;
             m_LeftFreeItems = 0;
-            m_RightFreeItems = 0;
             m_Version++;
         }
 

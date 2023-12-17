@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Collections;
 
 namespace Linq
@@ -7,23 +8,34 @@ namespace Linq
     {
         public static void Main(string[] args)
         {
-            var list = new FastList<int>()
-            {
-                11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-            };
-
-            int count = 1;
-            var result = list
-                .Where(l => count++ < 5)
-                .OrderBy((item1, item2) => item2 - item1);
+            FastList<int> fastlist = new FastList<int>() { 1, 2, 3, 4, 5, 6 };
+                        List<int> list = new List<int>() { 1, 2, 3, 4, 5, 6 };
+                        
+                        fastlist.Add(7);
+                        fastlist.Insert(0, 0);
+                        fastlist.Insert(3, -1);
+                        fastlist.Insert(3, -2);
+                        fastlist.Insert(3, -3);
+                        fastlist.Insert(3, -4);
+                        
+                        list.Add(7);
+                        list.Insert(0, 0);
+                        list.Insert(3, -1);
+                        list.Insert(3, -2);
+                        list.Insert(3, -3);
+                        list.Insert(3, -4);
             
-            
-            list.Insert(0, 12);
-            
-            foreach (var item in result)
-            {
-                Console.Write($"{item} ");
-            }
+                        foreach (var i in fastlist)
+                        {
+                            Console.Write(i + " ");
+                        }
+                        Console.WriteLine();
+                        
+                        foreach (var i in list)
+                        {
+                            Console.Write(i + " ");
+                        }
+                        Console.WriteLine();
 
             //Output: 9 10 11 12
 
